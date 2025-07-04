@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Em có yêu anh không?</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #ffe6f7;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+      transition: background 0.6s ease;
+    }
+
+    .question {
+      font-size: 26px;
+      margin-bottom: 40px;
+      max-width: 90%;
+      z-index: 1;
+    }
+
+    #yesButton, #noButton {
+      font-size: 24px;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      z-index: 2;
+      position: relative;
+    }
+
+    #yesButton {
+      background-color: #ff5c8d;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    #noButton {
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    #overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      font-size: 32px;
+      font-weight: bold;
+      color: #ff4081;
+      z-index: 3;
+    }
+
+    .heart, .sparkle {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .heart {
+      background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 29.6'><path fill='%23ff5c8d' d='M23.6,0C19.9,0,16.7,2,16,4.8C15.3,2,12.1,0,8.4,0C3.8,0,0,3.8,0,8.4c0,4.7,3.3,8.6,10.3,14.3l5.7,4.7l5.7-4.7C28.7,17,32,13.1,32,8.4C32,3.8,28.2,0,23.6,0z'/></svg>") center/contain no-repeat;
+      animation: float 5s linear forwards;
+    }
+
+    .sparkle {
+      background: radial-gradient(circle, #fff, #ffd6f5);
+      border-radius: 50%;
+      animation: sparkle 1.2s ease-out forwards;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.6);
+        opacity: 0;
+      }
+    }
+
+    @keyframes sparkle {
+      0% {
+        transform: scale(0.2);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="question" id="mainQuestion">Em có yêu anh không? 🥺</div>
+  <button id="yesButton">Yêu anh nhiều lắm ❤️</button>
+  <button id="noButton">Không</button>
+
+  <div id="overlay">Anh biết mà! Em là người đặc biệt nhất với anh 💞 Mãi bên nhau nha! 😘</div>
+
+  <script>
+    window.addEventListener('load', () => {
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => createHeart(), i * 150);
+      }
+    });
+    const yesBtn = document.getElementById('yesButton');
+    const noBtn = document.getElementById('noButton');
+    const question = document.getElementById('mainQuestion');
+    const overlay = document.getElementById('overlay');
+
+    let clickCount = 0;
+    let yesFont = 24;
+
+    const questions = [
+      'Em có yêu anh không? 🥺',
+      'Nói thật đi… Em yêu anh chứ? 😳',
+      'Đừng giấu anh, trái tim em đang thổn thức phải hông? 😘',
+      'Anh cảm nhận được tình yêu trong mắt em đó nha! ❤️',
+      'Thú nhận lẹ kẻo anh giận đó 😤',
+      'Em đang rung động đúng không nà? 💓',
+      'Tim anh nhói khi em từ chối đó nha 😖',
+      'Yêu anh đi màaaa 🥹',
+      'Em đang thử thách anh đúng hông? 😅',
+      'Trái tim em nói "Có" rồi kìa 😍'
+    ];
+
+    const noTexts = [
+      'Em chắc không? 🤔',
+      'Thiệt không đó? 😟',
+      'Đừng làm anh buồn mà… 🥺',
+      'Em hư quá nha! 😤',
+      'Không thoát được đâu 😈',
+      'Nút này không dành cho em đâu 🫣',
+      'Click nữa là anh hun đó nghen 😘',
+      'Đừng dối lòng nữa mà 🥰',
+      'Em mà không yêu, anh vẫn yêu đó! 💪',
+      'Lần cuối nè, nói thật đi! 💖'
+    ];
+
+    function moveNoButton() {
+      const questionRect = question.getBoundingClientRect();
+      const padding = 120;
+      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+      let x, y, attempt = 0;
+      do {
+        x = padding / 2 + Math.random() * maxX;
+        y = padding / 2 + Math.random() * maxY;
+        attempt++;
+      } while (
+        x + noBtn.offsetWidth > questionRect.left &&
+        x < questionRect.right &&
+        y + noBtn.offsetHeight > questionRect.top &&
+        y < questionRect.bottom &&
+        attempt < 10
+      );
+
+      noBtn.style.position = 'absolute';
+      noBtn.style.left = x + 'px';
+      noBtn.style.top = y + 'px';
+    }
+
+    function createSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.classList.add('sparkle');
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 1200);
+    }
+
+    noBtn.addEventListener('click', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      createSparkle(x, y);
+
+      if (clickCount < questions.length) {
+        yesFont += 4;
+        yesBtn.style.fontSize = yesFont + 'px';
+        yesBtn.style.padding = (20 + clickCount * 2) + 'px ' + (60 + clickCount * 4) + 'px';
+
+        question.innerText = questions[clickCount] || questions[questions.length - 1];
+        noBtn.innerText = noTexts[clickCount] || noTexts[noTexts.length - 1];
+        yesBtn.innerText = 'Được rồi... Em yêu anh nhiều lắm 😚❤️';
+
+        moveNoButton();
+        clickCount++;
+      } else {
+        noBtn.innerText = 'Ko còn lựa chọn nào nữa đâu 😭';
+        moveNoButton();
+      }
+    });
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.bottom = '-30px';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+
+    yesBtn.addEventListener('click', () => {
+      overlay.style.display = 'flex';
+      question.style.display = 'none';
+      yesBtn.style.display = 'none';
+      noBtn.style.display = 'none';
+      document.body.style.background = 'linear-gradient(135deg, #ffd6f5 0%, #ffb3e6 100%)';
+      const heartInterval = setInterval(createHeart, 250);
+      setTimeout(() => clearInterval(heartInterval), 6000);
+    });
+  </script>
+</body>
+</html>
